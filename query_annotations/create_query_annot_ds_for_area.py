@@ -125,6 +125,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--area_dir')
+    parser.add_argument('--num_proc', default=4)
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -147,7 +148,7 @@ if __name__ == '__main__':
             labels_path=labels_path
         ),
         remove_columns=['image_file'], # the function returns the the respective 'image_file' column
-        num_proc=1,
+        num_proc=args.num_proc,
         batched=False
     )
 
@@ -163,7 +164,8 @@ if __name__ == '__main__':
                         for ids in x['face_id']
                         for id in ids]
         },
-    batched=True)
+    batched=True,
+    num_proc=args.num_proc)
     # img_ds.to_csv('debug_map.csv')
 
     img_ds.save_to_disk(
