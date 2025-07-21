@@ -10,7 +10,7 @@
 
 # Annotations
 *.mat
-*.txt
+# *.txt
 
 # Meshes
 *.obj
