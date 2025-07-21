@@ -12,11 +12,11 @@
 """
 
 import array
-import Imath
+# import Imath
 import json
 import numpy
-import OpenEXR
-from   scipy.ndimage import imread
+# import OpenEXR
+# from   scipy.ndimage import imread
 
 """ Semantics """
 def get_index( color ):
@@ -60,27 +60,27 @@ def parse_label( label ):
 
 
 """ EXR Functions """
-def normalize_array_for_matplotlib( arr_to_rescale ):
-    ''' Rescales an array to be between [0, 1]
-    Args:
-        arr_to_rescale:
-    Returns:
-        An array in [0,1] with f(0) = 0.5
-    '''
-    return ( arr_to_rescale / np.abs( arr_to_rescale ).max() ) / 2 + 0.5
+# def normalize_array_for_matplotlib( arr_to_rescale ):
+#     ''' Rescales an array to be between [0, 1]
+#     Args:
+#         arr_to_rescale:
+#     Returns:
+#         An array in [0,1] with f(0) = 0.5
+#     '''
+#     return ( arr_to_rescale / np.abs( arr_to_rescale ).max() ) / 2 + 0.5
 
-def read_exr( image_fpath ):
-    """ Reads an openEXR file into an RGB matrix with floats """
-    f = OpenEXR.InputFile( image_fpath )
-    dw = f.header()['dataWindow']
-    w, h = (dw.max.x - dw.min.x + 1, dw.max.y - dw.min.y + 1)    
-    im = np.empty( (h, w, 3) )
+# def read_exr( image_fpath ):
+#     """ Reads an openEXR file into an RGB matrix with floats """
+#     f = OpenEXR.InputFile( image_fpath )
+#     dw = f.header()['dataWindow']
+#     w, h = (dw.max.x - dw.min.x + 1, dw.max.y - dw.min.y + 1)    
+#     im = np.empty( (h, w, 3) )
 
-    # Read in the EXR
-    FLOAT = Imath.PixelType(Imath.PixelType.FLOAT)
-    channels = f.channels( ["R", "G", "B"], FLOAT )
-    for i, channel in enumerate( channels ):
-        im[:,:,i] = np.reshape( array.array( 'f', channel ), (h, w) )
-    return im
+#     # Read in the EXR
+#     FLOAT = Imath.PixelType(Imath.PixelType.FLOAT)
+#     channels = f.channels( ["R", "G", "B"], FLOAT )
+#     for i, channel in enumerate( channels ):
+#         im[:,:,i] = np.reshape( array.array( 'f', channel ), (h, w) )
+#     return im
 
 
