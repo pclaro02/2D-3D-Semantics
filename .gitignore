@@ -3,7 +3,7 @@
 *.exr
 *.jpg
 *.jpeg
-
+!query_annotations/cubemap_face_mask.png
 # Pose information
 *.json
 *.csv
