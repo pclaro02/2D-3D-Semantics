@@ -2,10 +2,9 @@ import argparse
 import glob
 import os
 import sys
-import json
 import numpy as np
 from PIL import Image
-from datasets import Dataset, DatasetDict
+from datasets import Dataset
 
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if project_root not in sys.path:
@@ -128,15 +127,12 @@ def parse_args():
     parser.add_argument('--num_proc', default=4)
     return parser.parse_args()
 
-if __name__ == '__main__':
-
-    labels_path = 'assets/semantic_labels.json'
-    output_dir = 'query_annotations/'
-    cubemap_face_mask_array = np.array(
-        Image.open('query_annotations/cubemap_face_mask.png')
-    )
-    args = parse_args()
-    area_dir = args.area_dir
+def create_query_annots_ds_for_area(
+        cubemap_face_mask_array,
+        area_dir,
+        labels_path,
+        num_proc=4
+):
     semantic_imgs_dir = os.path.join(area_dir, 'pano/semantic')
     semantic_imgs_files = glob.glob(os.path.join(semantic_imgs_dir, '**', '*.png'), recursive=True)
 
@@ -148,7 +144,7 @@ if __name__ == '__main__':
             labels_path=labels_path
         ),
         remove_columns=['image_file'], # the function returns the the respective 'image_file' column
-        num_proc=args.num_proc,
+        num_proc=num_proc,
         batched=False
     )
 
@@ -165,8 +161,25 @@ if __name__ == '__main__':
                         for id in ids]
         },
     batched=True,
-    num_proc=args.num_proc)
-    # img_ds.to_csv('debug_map.csv')
+    num_proc=num_proc)
+    
+    return img_ds
+
+if __name__ == '__main__':
+
+    labels_path = 'assets/semantic_labels.json'
+    output_dir = 'query_annotations/'
+    cubemap_face_mask_array = np.array(
+        Image.open('query_annotations/cubemap_face_mask.png')
+    )
+    args = parse_args()
+    area_dir = args.area_dir
+    img_ds = create_query_annots_ds_for_area(
+        cubemap_face_mask_array=cubemap_face_mask_array,
+        area_dir=area_dir,
+        num_proc=args.num_proc,
+        labels_path=labels_path
+    )
 
     img_ds.save_to_disk(
         os.path.join(output_dir, f'2d-3d-semantics_{area_dir}_cp_query_annots')
